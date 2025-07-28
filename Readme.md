@@ -1,68 +1,70 @@
 # Connecting the Dots Challenge - Round 1A Solution
 
 ## Teammates
+
 - Didla Sowmya Siri
 - Hanshika Misra
-  
+
 ## Project Overview
 
-This repository contains my solution for Round 1A of the "Connecting the Dots" Challenge. The goal is to extract a structured outline from PDF documents, including the document title and hierarchical headings (H1, H2, H3) along with their page numbers.
+This repository contains our solution for Round 1A of the "Connecting the Dots" Challenge.
 
-The output is a JSON file per PDF, following the specified format, enabling smarter document experiences such as semantic search and insight generation.
+**Goal:** Extract a structured outline from PDF documents, including the document title and hierarchical headings (H1, H2, H3) with page numbers.
+
+Each input PDF in `/input` is processed to generate a matching JSON in `/output`.
 
 ## Approach
 
 - Utilized **PyMuPDF (fitz)** to parse PDFs offline.
-- Extracted text spans with font size and style information per page.
-- Determined the document title as the largest text block on the first page.
-- Applied heuristics based on font size to classify headings into H1, H2, H3 levels.
-- Collected heading text and associated page numbers into a hierarchical JSON outline.
-- The entire solution runs offline, uses only CPU, and meets the performance and size constraints (<200MB for any model/code).
+- Extracted text spans with font sizes and style per page.
+- Chose the largest text on page 1 as document title.
+- Detected headings heuristically via font size for H1, H2, H3.
+- Collected headings and page numbers into the output JSON as required.
+- Solution runs offline, CPU only, and fits well within performance and size constraints (<200MB).
 
 ## Folder Structure
 
-- `/input`: Place your input PDF files here.
-- `/output`: JSON output files will be generated here, named after the input PDFs (e.g., `sample.pdf` → `sample.json`).
-- `outline_extractor.py`: Main Python script that performs extraction.
-- `Dockerfile`: Defines the container environment for offline execution.
-- `requirements.txt`: Python dependencies (`pymupdf`).
-- `README.md`: This file.
+- `/input` — Place your input PDF files here.
+- `/output` — JSONs will be generated here, matching each PDF filename.
+- `outline_extractor.py` — Main Python extraction script.
+- `Dockerfile` — Container for offline, platform-compliant runs.
+- `requirements.txt` — Python dependencies.
+- `README.md` — This file.
 
 ## How to Build the Docker Image
 
-Run the following command from the root directory of this repository:
+Run this from your repo root (**replace `yourimagename` if you wish**):
 
-
-Replace `yourimagename` with your preferred image name.
+docker build --platform linux/amd64 -t yourimagename:round1a
 
 ## How to Run the Solution
 
-To process all PDF files placed in `/input` and generate JSON outputs in `/output`, execute:
+docker run --rm -v $(pwd)/input:/app/input -v $(pwd)/output:/app/output --network none yourimagename:round1a
 
-
-- The container automatically processes all PDFs inside `/app/input`.
-- Outputs are saved as JSON files inside `/app/output`.
-- No internet connection is used during runtime to comply with challenge rules.
+- The container processes all PDFs in `/app/input`.
+- Outputs JSONs in `/app/output`, named as `<pdfname>.json`.
+- No internet is used at runtime for full compliance.
 
 ## Constraints and Compliance
 
-- Runs on CPU only (amd64 architecture).
-- No GPU or internet dependency.
-- Execution time ≤ 10 seconds for a 50-page PDF.
-- Model/code size ≤ 200MB.
-- Output files adhere strictly to the required JSON format.
+- **CPU only** (amd64/x86_64 architecture)
+- No GPU or internet at runtime.
+- **≤10 seconds** execution for 50-page PDF.
+- Model/code size ≤200MB.
+- JSON output matches challenge schema exactly.
 
-## Known Limitations / Assumptions
+## Known Limitations
 
-- Heading detection is heuristic-based relying on font size and style; may vary with document formatting.
-- Tested on provided sample PDFs and additional test files.
-- Multilingual handling not implemented in Round 1A.
+- Heading detection is heuristic (font-size based); rare unconventional PDF layouts may be misclassified.
+- Multilingual detection is not implemented in this round.
 
 ## Contact / Questions
 
-For any questions or clarifications, please contact us via the GitHub repository.
+Message via this GitHub repo for any questions.
 
 ---
 
-Thank you!
+**Thank you!**
+
+---
 
